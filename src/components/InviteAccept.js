@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { API, Auth } from 'aws-amplify';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 function InviteAccept() {
     const { inviteCode } = useParams();
-    const history = useHistory();
+    const navigate = useNavigate();
     const [invitation, setInvitation] = useState(null);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -38,7 +38,7 @@ function InviteAccept() {
             await Auth.signIn(username, password);
             await API.del('inviteApi', `/invite/${inviteCode}`);
 
-            history.push('/dashboard');
+            navigate('/dashboard');
         } catch (error) {
             console.error('Error accepting invitation:', error);
         }
