@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Auth } from 'aws-amplify';
+import { getCurrentUser } from 'aws-amplify/auth';
 import AdminDashboard from './AdminDashboard';
 import MemberDashboard from './MemberDashboard';
 
@@ -12,7 +12,7 @@ function Dashboard() {
 
     async function fetchUser() {
         try {
-            const userData = await Auth.currentAuthenticatedUser();
+            const userData = await getCurrentUser();
             setUser(userData);
         } catch (err) {
             console.error('Error fetching user:', err);
