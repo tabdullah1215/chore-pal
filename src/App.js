@@ -1,22 +1,27 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Amplify } from 'aws-amplify';
-import { withAuthenticator } from '@aws-amplify/ui-react';
-import awsconfig from './aws-exports';
+import { Authenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+import config from './amplifyconfiguration.json';
 import Dashboard from './components/Dashboard';
 import InviteAccept from './components/InviteAccept';
 
-Amplify.configure(awsconfig);
+Amplify.configure(config);
 
 function App() {
-  return (
-      <Router>
-        <Routes>
-          <Route exact path="/" component={Dashboard} />
-          <Route path="/invite/:inviteCode" component={InviteAccept} />
-        </Routes>
-      </Router>
-  );
+    return (
+        <Authenticator>
+            {({ signOut, user }) => (
+                <Router>
+                    <Routes>
+                        <Route path="/" element={<Dashboard user={user} signOut={signOut} />} />
+                        <Route path="/invite/:inviteCode" element={<InviteAccept />} />
+                    </Routes>
+                </Router>
+            )}
+        </Authenticator>
+    );
 }
 
-export default withAuthenticator(App);
+export default App;
