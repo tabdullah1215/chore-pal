@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { generateClient } from 'aws-amplify/api';
-import { listUsersWithTasks } from '../graphql/queries';
+import { listUsers } from '../graphql/queries';
 import { createTask } from '../graphql/mutations';
 import {
     Tabs,
@@ -39,14 +39,16 @@ function AdminDashboard({ organizationId }) {
     async function fetchUsers() {
         try {
             const userData = await client.graphql({
-                query: listUsersWithTasks,
+                query: listUsers,
                 variables: {
                     filter: { organizationId: { eq: organizationId } }
                 }
             });
             const fetchedUsers = userData.data.listUsers.items;
             setUsers(fetchedUsers);
-            setSelectedUser(fetchedUsers[0]);
+            if (fetchedUsers.length > 0) {
+                setSelectedUser(fetchedUsers[0]);
+            }
         } catch (err) {
             console.error('Error fetching users:', err);
         }
@@ -60,14 +62,14 @@ function AdminDashboard({ organizationId }) {
                     input: {
                         title: newTaskTitle,
                         status: 'new',
-                        assignedToID: selectedUser.id,
+                        assignedToId: selectedUser.id,
                         organizationId: organizationId
                     }
                 }
             });
             setOpenDialog(false);
             setNewTaskTitle('');
-            fetchUsers();
+            // Optionally, you could refresh the tasks for the selected user here
         } catch (err) {
             console.error('Error assigning task:', err);
         }
