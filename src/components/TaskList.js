@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { API, graphqlOperation } from 'aws-amplify';
 import { listTasks } from '../graphql/queries';
 import { updateTask, deleteTask } from '../graphql/mutations';
-import { List, ListItem, ListItemText, Button } from '@material-ui/core';
+import { List, ListItem, ListItemText, Button } from '@mui/material';
 
 function TaskList({ userId, isAdmin }) {
     const [tasks, setTasks] = useState([]);

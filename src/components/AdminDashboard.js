@@ -17,7 +17,7 @@ import {
     useMediaQuery,
     useTheme,
     Grid,
-} from '@material-ui/core';
+} from '@mui/material';
 import TaskList from './TaskList';
 import InviteForm from './InviteForm';
 
