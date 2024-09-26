@@ -1,26 +1,22 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Amplify } from 'aws-amplify';
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import awsconfig from './aws-exports';
+import Dashboard from './components/Dashboard';
+import InviteAccept from './components/InviteAccept';
+
+Amplify.configure(awsconfig);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Router>
+        <Switch>
+          <Route exact path="/" component={Dashboard} />
+          <Route path="/invite/:inviteCode" component={InviteAccept} />
+        </Switch>
+      </Router>
   );
 }
 
-export default App;
+export default withAuthenticator(App);

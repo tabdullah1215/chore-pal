@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-chorepal-dev-e441f-authRole",
+      "UnauthRoleArn": "arn:aws:iam::718322707229:role/amplify-chorepal-dev-e441f-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::718322707229:role/amplify-chorepal-dev-e441f-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-chorepal-dev-e441f-deployment",
+      "UnauthRoleName": "amplify-chorepal-dev-e441f-unauthRole",
+      "StackName": "amplify-chorepal-dev-e441f",
+      "StackId": "arn:aws:cloudformation:us-east-1:718322707229:stack/amplify-chorepal-dev-e441f/88df5100-7ae9-11ef-a26f-0e371cf49ae5",
+      "AmplifyAppId": "dvk52ys6f8o5y"
+    },
+    "categories": {
+      "auth": {
+        "chorepal37782a72": {}
+      },
+      "api": {
+        "chorepal": {}
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+type Organization @model @auth(rules: [{allow: owner}]) {
+  id: ID!
+  name: String!
+  adminId: ID!
+}
+
+type User @model @auth(rules: [{allow: owner}, {allow: groups, groups: ["Admin"], operations: [read]}]) {
+  id: ID!
+  username: String!
+  email: String!
+  role: String!
+  organizationId: ID!
+}
+
+type Task @model @auth(rules: [{allow: owner}, {allow: groups, groups: ["Admin"], operations: [read, update, delete]}]) {
+  id: ID!
+  title: String!
+  description: String
+  status: String!
+  assignedToId: ID!
+}
+
