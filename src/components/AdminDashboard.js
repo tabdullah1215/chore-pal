@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { API, graphqlOperation } from 'aws-amplify';
+import { generateClient } from 'aws-amplify/api';
 import { listUsersWithTasks } from '../graphql/queries';
 import { createTask } from '../graphql/mutations';
 import {
@@ -21,6 +21,8 @@ import {
 import TaskList from './TaskList';
 import InviteForm from './InviteForm';
 
+const client = generateClient();
+
 function AdminDashboard({ organizationId }) {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -36,9 +38,12 @@ function AdminDashboard({ organizationId }) {
 
     async function fetchUsers() {
         try {
-            const userData = await API.graphql(graphqlOperation(listUsersWithTasks, {
-                filter: { organizationId: { eq: organizationId } }
-            }));
+            const userData = await client.graphql({
+                query: listUsersWithTasks,
+                variables: {
+                    filter: { organizationId: { eq: organizationId } }
+                }
+            });
             const fetchedUsers = userData.data.listUsers.items;
             setUsers(fetchedUsers);
             setSelectedUser(fetchedUsers[0]);
@@ -49,14 +54,17 @@ function AdminDashboard({ organizationId }) {
 
     async function handleAssignTask() {
         try {
-            await API.graphql(graphqlOperation(createTask, {
-                input: {
-                    title: newTaskTitle,
-                    status: 'new',
-                    assignedToID: selectedUser.id,
-                    organizationId: organizationId
+            await client.graphql({
+                query: createTask,
+                variables: {
+                    input: {
+                        title: newTaskTitle,
+                        status: 'new',
+                        assignedToID: selectedUser.id,
+                        organizationId: organizationId
+                    }
                 }
-            }));
+            });
             setOpenDialog(false);
             setNewTaskTitle('');
             fetchUsers();
