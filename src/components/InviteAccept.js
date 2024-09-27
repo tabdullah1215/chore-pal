@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { API, Auth } from 'aws-amplify';
+import { generateClient } from 'aws-amplify/api';
+import { signUp, signIn } from 'aws-amplify/auth';
 import { useParams, useNavigate } from 'react-router-dom';
+
+const client = generateClient();
 
 function InviteAccept() {
     const { inviteCode } = useParams();
@@ -15,7 +18,7 @@ function InviteAccept() {
 
     const fetchInvitation = async () => {
         try {
-            const response = await API.get('inviteApi', `/invite/${inviteCode}`);
+            const response = await client.get('inviteApi', `/invite/${inviteCode}`);
             setInvitation(response);
         } catch (error) {
             console.error('Error fetching invitation:', error);
@@ -25,7 +28,7 @@ function InviteAccept() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await Auth.signUp({
+            await signUp({
                 username,
                 password,
                 attributes: {
@@ -35,8 +38,8 @@ function InviteAccept() {
                 }
             });
 
-            await Auth.signIn(username, password);
-            await API.del('inviteApi', `/invite/${inviteCode}`);
+            await signIn({ username, password });
+            await client.del('inviteApi', `/invite/${inviteCode}`);
 
             navigate('/dashboard');
         } catch (error) {

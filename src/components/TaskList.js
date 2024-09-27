@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { API, graphqlOperation } from 'aws-amplify';
+import { generateClient } from 'aws-amplify/api'; // Updated import for API
 import { listTasks } from '../graphql/queries';
 import { updateTask, deleteTask } from '../graphql/mutations';
 import { List, ListItem, ListItemText, Button } from '@mui/material';
@@ -7,15 +7,25 @@ import { List, ListItem, ListItemText, Button } from '@mui/material';
 function TaskList({ userId, isAdmin }) {
     const [tasks, setTasks] = useState([]);
 
+    // Create API client using generateClient (new in v6)
+    const apiClient = generateClient({
+        name: 'API',  // Specifies the name of the service you are using
+        region: 'your-region',  // Replace with your region
+        service: 'appsync',  // Assuming you're using AppSync for the GraphQL API
+    });
+
     useEffect(() => {
         fetchTasks();
     }, [userId]);
 
     async function fetchTasks() {
         try {
-            const taskData = await API.graphql(graphqlOperation(listTasks, {
-                filter: { assignedToID: { eq: userId } }
-            }));
+            const taskData = await apiClient.graphql({
+                query: listTasks,
+                variables: {
+                    filter: { assignedToID: { eq: userId } }
+                }
+            });
             setTasks(taskData.data.listTasks.items);
         } catch (err) {
             console.error('Error fetching tasks:', err);
@@ -24,9 +34,12 @@ function TaskList({ userId, isAdmin }) {
 
     async function handleUpdateStatus(taskId, newStatus) {
         try {
-            await API.graphql(graphqlOperation(updateTask, {
-                input: { id: taskId, status: newStatus }
-            }));
+            await apiClient.graphql({
+                query: updateTask,
+                variables: {
+                    input: { id: taskId, status: newStatus }
+                }
+            });
             fetchTasks();
         } catch (err) {
             console.error('Error updating task status:', err);
@@ -35,7 +48,10 @@ function TaskList({ userId, isAdmin }) {
 
     async function handleDeleteTask(taskId) {
         try {
-            await API.graphql(graphqlOperation(deleteTask, { input: { id: taskId } }));
+            await apiClient.graphql({
+                query: deleteTask,
+                variables: { input: { id: taskId } }
+            });
             fetchTasks();
         } catch (err) {
             console.error('Error deleting task:', err);

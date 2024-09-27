@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { API } from 'aws-amplify';
+import { generateClient } from 'aws-amplify/api'; // Updated to use generateClient
 import { v4 as uuidv4 } from 'uuid';
 
 function InviteForm({ organizationId }) {
@@ -7,13 +7,22 @@ function InviteForm({ organizationId }) {
     const [role, setRole] = useState('member');
     const [inviteLink, setInviteLink] = useState('');
 
+    // Create API client using generateClient (new in v6)
+    const apiClient = generateClient({
+        name: 'API',  // Specifies the name of the service you are using
+        region: 'your-region',  // Replace with your region
+        service: 'apigateway',  // Assuming you're using API Gateway for REST API
+    });
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const inviteCode = uuidv4();
 
         try {
-            await API.post('inviteApi', '/invite', {
-                body: { email, role, organizationId, inviteCode }
+            // Use the new apiClient to make the POST request
+            await apiClient.post({
+                path: '/invite',
+                body: { email, role, organizationId, inviteCode },
             });
 
             const link = `${window.location.origin}/invite/${inviteCode}`;
